@@ -19,7 +19,7 @@
             </p>
             <p class="text-button">Address: {{ User.address }}</p>
             <p class="text-button">Birthday: {{ User.birth }}</p>
-            <v-chip class="text-button"> 32 CERTIFICATES </v-chip>
+            <v-chip class="text-button"> {{ numOfCert }} CERTIFICATES </v-chip>
           </v-card-text>
         </v-card>
       </v-col>
@@ -52,6 +52,7 @@
               <v-carousel-item src="https://picsum.photos/2000/1500" cover>
               </v-carousel-item>
             </v-carousel>
+            <UploadFile />
           </v-col>
         </v-row>
       </v-col>
@@ -60,13 +61,17 @@
 </template>
 
 <script>
+import UploadFile from "../components/UploadFile";
 export default {
+  components: {
+    UploadFile,
+  },
   data() {
     return {
       User: {
-        name: "",
-        address: "",
-        birth: "",
+        name: "No Name",
+        address: "0x00...000",
+        birth: "00-00-0000",
         numOfCert: 0,
         avtURL: "",
       },
