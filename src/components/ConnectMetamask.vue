@@ -4,6 +4,7 @@
     color="secondary"
     @click="connect"
     v-if="!isConnected"
+    @user-access="connect()"
   >
     Connect Metamask
   </v-btn>
@@ -20,15 +21,14 @@
 <script>
 //import Web3 from "web3";
 import blockies from "ethereum-blockies";
+import { mapMutations, mapState } from "vuex";
 
 export default {
   data() {
-    return {
-      isConnected: false,
-      currentAccount: null,
-    };
+    return {};
   },
   computed: {
+    ...mapState(["currentAccount", "isConnected"]),
     shortenedAddress() {
       if (!this.currentAccount) return "";
       return (
@@ -52,43 +52,11 @@ export default {
     },
   },
   methods: {
-    async connect() {
-      if (typeof window.ethereum !== "undefined") {
-        try {
-          await window.ethereum.enable();
-          await this.updateAccount();
-        } catch (error) {
-          console.error("Failed to connect:", error);
-        }
-      } else {
-        console.error("Metamask not found.");
-      }
-    },
-    async disconnect() {
-      this.isConnected = false;
-      this.currentAccount = null;
-    },
-    async updateAccount() {
-      const accounts = await window.ethereum.request({
-        method: "eth_accounts",
-      });
-      if (accounts.length > 0) {
-        this.isConnected = true;
-        this.currentAccount = accounts[0];
-      } else {
-        this.isConnected = false;
-        this.currentAccount = null;
-      }
-    },
+    ...mapMutations(["connect", "updateAccount"]),
   },
   mounted() {
     if (typeof window.ethereum !== "undefined") {
       window.ethereum.on("accountsChanged", this.updateAccount);
-    }
-  },
-  beforeUnmount() {
-    if (typeof window.ethereum !== "undefined") {
-      window.ethereum.removeListener("accountsChanged", this.updateAccount);
     }
   },
 };

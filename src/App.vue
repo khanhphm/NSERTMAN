@@ -11,7 +11,7 @@
       <v-tabs class="ml-8">
         <v-tab to="/">Home</v-tab>
         <v-tab to="/view">View</v-tab>
-        <v-tab>Personal</v-tab>
+        <v-tab to="/user">User</v-tab>
       </v-tabs>
       <template v-slot:append>
         <ConnectMetamask />

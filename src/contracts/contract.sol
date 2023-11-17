@@ -36,11 +36,18 @@ contract SERT is ERC721, ERC721URIStorage {
     uint public _tokenId = 0;
     mapping(address => uint[]) public tokenIdsByAddress;
 
-    function safeMint(address to, string memory uri) public onlyManager {
+    function mint(address to, string memory uri) public onlyManager {
         _safeMint(to, _tokenId);
         _setTokenURI(_tokenId, uri);
         tokenIdsByAddress[to].push(_tokenId);
         _tokenId++;
+    }
+
+    function batchMint(address[] memory recipients, string[] memory uris) public onlyManager{
+        require(recipients.length == uris.length,"ERROR INPUT");
+        for(uint i=0;i<uris.length;i++){
+            mint(recipients[i],uris[i]);
+        }
     }
 
     function getTokensByAddress(
@@ -55,6 +62,13 @@ contract SERT is ERC721, ERC721URIStorage {
         uint256 tokenId
     ) public view override(ERC721, ERC721URIStorage) returns (string memory) {
         return super.tokenURI(tokenId);
+    }
+
+    mapping(address => string) public userInfors;
+
+    function setInfo(string memory infoURI) public payable {
+        require(msg.value == 0.01 ether,"Value must equal 0.01 ether");
+        userInfors[msg.sender] = infoURI;
     }
 
     function supportsInterface(

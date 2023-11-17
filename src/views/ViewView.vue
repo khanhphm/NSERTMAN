@@ -6,6 +6,7 @@
           <v-card-text class="text-center">
             <v-avatar size="200" class="my-5">
               <v-img
+                height="100%"
                 cover
                 :src="
                   User.avtURL ||
@@ -17,8 +18,17 @@
             <p class="text-h4">
               <strong>{{ User.name }}</strong>
             </p>
-            <p class="text-button">Address: {{ User.address }}</p>
-            <p class="text-button">Birthday: {{ User.birth }}</p>
+            <p class="text-button">Birthday:</p>
+            <p class="text-caption">
+              {{ User.birth }}
+            </p>
+            <p class="text-button">Address:</p>
+            <p class="text-caption">{{ User.address }}</p>
+
+            <p class="text-button">Introduce:</p>
+            <p class="text-justify text-caption mx-3 mb-8">
+              {{ User.introduce }}
+            </p>
             <v-chip class="text-button"> {{ numOfCert }} CERTIFICATES </v-chip>
           </v-card-text>
         </v-card>
