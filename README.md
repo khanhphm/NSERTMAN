@@ -31,5 +31,5 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 ### Run network:
 
 ```
-ganache --database.dbPath="./chain/db" --wallet.mnemonic="provide hunt injury sand moment twice soft physical ketchup floor north nothing" --chain.chainId=1 --server.port=8545
+ganache --database.dbPath="./chain/db" --wallet.mnemonic=<mnemonic> --chain.chainId=1 --server.port=8545
 ```
