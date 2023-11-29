@@ -2,7 +2,7 @@ import Web3 from "web3";
 
 const web3 = new Web3(window.ethereum || "http://127.0.0.1:8545");
 
-const contractAddress = "0x1D78aA77a4f75c14BAb18522b037408A76d10C25";
+const contractAddress = process.env.VUE_APP_ADDRESS;
 const contractABI = [
   {
     inputs: [],
