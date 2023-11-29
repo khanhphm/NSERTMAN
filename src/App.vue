@@ -12,6 +12,7 @@
         <v-tab to="/">Home</v-tab>
         <v-tab to="/view">View</v-tab>
         <v-tab to="/user">User</v-tab>
+        <v-tab to="/admin">Admin</v-tab>
       </v-tabs>
       <template v-slot:append>
         <ConnectMetamask />
@@ -23,6 +24,21 @@
   </v-app>
 </template>
 
-<script setup>
+<script>
+import { mapState } from "vuex";
 import ConnectMetamask from "./components/ConnectMetamask.vue";
+
+//import contract from "./contracts/Web3";
+export default {
+  components: { ConnectMetamask },
+  data() {
+    return {
+      status: false,
+    };
+  },
+  computed: {
+    ...mapState[("currentAccount", "isConnected", "isManager")],
+  },
+  mounted() {},
+};
 </script>

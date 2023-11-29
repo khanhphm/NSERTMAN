@@ -29,7 +29,9 @@
             <p class="text-justify text-caption mx-3 mb-8">
               {{ User.introduce }}
             </p>
-            <v-chip class="text-button"> {{ numOfCert }} CERTIFICATES </v-chip>
+            <v-chip class="text-button">
+              {{ certificates.length }} CERTIFICATES
+            </v-chip>
           </v-card-text>
         </v-card>
       </v-col>
@@ -49,20 +51,13 @@
         <v-row>
           <v-col>
             <v-carousel>
-              <v-carousel-item src="https://picsum.photos/2000/1500" cover>
-              </v-carousel-item>
-              <v-carousel-item src="https://picsum.photos/2000/1500" cover>
-              </v-carousel-item>
-              <v-carousel-item src="https://picsum.photos/2000/1500" cover>
-              </v-carousel-item>
-              <v-carousel-item src="https://picsum.photos/2000/1500" cover>
-              </v-carousel-item>
-              <v-carousel-item src="https://picsum.photos/2000/1500" cover>
-              </v-carousel-item>
-              <v-carousel-item src="https://picsum.photos/2000/1500" cover>
+              <v-carousel-item
+                v-for="(token, id) in certificates"
+                :src="token.image"
+                :key="id"
+              >
               </v-carousel-item>
             </v-carousel>
-            <UploadFile />
           </v-col>
         </v-row>
       </v-col>
@@ -71,11 +66,9 @@
 </template>
 
 <script>
-import UploadFile from "../components/UploadFile";
+import contract from "../contracts/Web3";
+
 export default {
-  components: {
-    UploadFile,
-  },
   data() {
     return {
       User: {
@@ -91,22 +84,36 @@ export default {
           name: "Dynamic Brand Specialist",
           description:
             "Eligendi sunt alias fugit. Enim omnis sed repellendus. Praesentium quia et consequuntur. Cupiditate dolore expedita asperiores. Ut corrupti voluptatum error numquam quo dolores est reiciendis. Mollitia voluptates magni voluptas eveniet.",
-          image: "http://placeimg.com/300/300/certificate",
+          image:
+            "https://upload.wikimedia.org/wikipedia/commons/6/6b/Icecat1-300x300.svg",
         },
       ],
     };
   },
   methods: {
-    Search(address) {
-      console.log(address);
-      this.User = {
-        name: "Nguyen Thi Dieu Ly",
-        address: "0xa6...b10F",
-        birth: "15-09-2005",
-        numOfCert: 43,
-        avtURL:
-          "https://scontent.fhan14-2.fna.fbcdn.net/v/t1.15752-9/399864892_288484504170170_7342525013531525164_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=8cd0a2&_nc_eui2=AeEPQEXNkDFoqLe7KhjpNkhH594Hvc1tU-jn3ge9zW1T6KG7QW2tu1nRhQy8btAZhydUvQXxdpT2TGXtClc9qu2Z&_nc_ohc=ZEWLac0OD5QAX9-3nkl&_nc_ht=scontent.fhan14-2.fna&oh=03_AdSz9Xz0n1GauDKN4m-t6W6NyxDSdCsyDVnbq4c30mPg4g&oe=657BFF84",
-      };
+    async Search(address) {
+      if (address == "") {
+        alert("Để trống ô tìm kiếm");
+        return;
+      }
+      const data = await contract.methods.userInfors(address).call();
+      const res = await fetch(data);
+      this.User = await res.json();
+      this.User.address = address;
+      const tokenData = await contract.methods
+        .getTokensByAddress(address)
+        .call();
+      let tokens = [];
+
+      for (const item in tokenData) {
+        const id = Number(item);
+        const tokenURI = await contract.methods.tokenURI(id).call();
+        const res = await fetch(tokenURI);
+        const token = await res.json();
+        tokens.push(token);
+      }
+      this.certificates = tokens;
+      console.log(this.certificates);
       this.searchAddress = "";
     },
   },

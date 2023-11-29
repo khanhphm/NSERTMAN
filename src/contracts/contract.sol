@@ -5,8 +5,8 @@ import "@openzeppelin/contracts@5.0.0/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts@5.0.0/token/ERC721/extensions/ERC721URIStorage.sol";
 
 contract SERT is ERC721, ERC721URIStorage {
-    address Owner;
-    mapping(address => bool) isManager;
+    address public Owner;
+    mapping(address => bool) public isManager;
 
     constructor() ERC721("Certificate Manager", "SERT") {
         Owner = msg.sender;

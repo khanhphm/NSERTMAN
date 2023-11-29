@@ -28,7 +28,7 @@ export default {
     return {};
   },
   computed: {
-    ...mapState(["currentAccount", "isConnected"]),
+    ...mapState(["currentAccount", "isConnected", "isManager"]),
     shortenedAddress() {
       if (!this.currentAccount) return "";
       return (
@@ -56,6 +56,7 @@ export default {
   },
   mounted() {
     if (typeof window.ethereum !== "undefined") {
+      this.connect();
       window.ethereum.on("accountsChanged", this.updateAccount);
     }
   },

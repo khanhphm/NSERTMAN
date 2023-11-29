@@ -2,7 +2,7 @@ import Web3 from "web3";
 
 const web3 = new Web3(window.ethereum || "http://127.0.0.1:8545");
 
-const contractAddress = "0x4a9Cb79e6a3dce783ec8F9B874Fd9b99C0846fbB";
+const contractAddress = "0x1D78aA77a4f75c14BAb18522b037408A76d10C25";
 const contractABI = [
   {
     inputs: [],
@@ -221,6 +221,19 @@ const contractABI = [
   },
   {
     inputs: [],
+    name: "Owner",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "_tokenId",
     outputs: [
       {
@@ -339,6 +352,25 @@ const contractABI = [
       },
     ],
     name: "isApprovedForAll",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    name: "isManager",
     outputs: [
       {
         internalType: "bool",
@@ -614,6 +646,13 @@ const contractABI = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "widthdraw",
+    outputs: [],
+    stateMutability: "payable",
     type: "function",
   },
 ]; // ABI của hợp đồng

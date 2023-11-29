@@ -30,7 +30,7 @@
               {{ User.introduce }}
             </p>
             <v-chip class="text-button">
-              {{ User.numOfCert }} CERTIFICATES
+              {{ certificates.length }} CERTIFICATES
             </v-chip>
           </v-card-text>
           <v-card-actions>
@@ -126,17 +126,14 @@
         <v-row>
           <v-col>
             <v-carousel>
-              <v-carousel-item src="https://picsum.photos/2000/1500" cover>
-              </v-carousel-item>
-              <v-carousel-item src="https://picsum.photos/2000/1500" cover>
-              </v-carousel-item>
-              <v-carousel-item src="https://picsum.photos/2000/1500" cover>
-              </v-carousel-item>
-              <v-carousel-item src="https://picsum.photos/2000/1500" cover>
-              </v-carousel-item>
-              <v-carousel-item src="https://picsum.photos/2000/1500" cover>
-              </v-carousel-item>
-              <v-carousel-item src="https://picsum.photos/2000/1500" cover>
+              <v-carousel-item
+                v-for="(token, id) in certificates"
+                :src="
+                  token.image ||
+                  'https://flowbite.com/docs/images/examples/image-1@2x.jpg'
+                "
+                :key="id"
+              >
               </v-carousel-item>
             </v-carousel>
           </v-col>
@@ -161,7 +158,7 @@ export default {
         avtURL: "",
         introduce: "",
       },
-
+      certificates: [],
       newUserInfo: {
         name: "",
         birth: "",
@@ -174,6 +171,26 @@ export default {
     ...mapState(["currentAccount", "isConnected"]),
   },
   methods: {
+    async getCert(address) {
+      const data = await contract.methods.userInfors(address).call();
+      const res = await fetch(data);
+      this.User = await res.json();
+      this.User.address = address;
+      const tokenData = await contract.methods
+        .getTokensByAddress(address)
+        .call();
+      let tokens = [];
+
+      for (const item in tokenData) {
+        const id = Number(item);
+        const tokenURI = await contract.methods.tokenURI(id).call();
+        const res = await fetch(tokenURI);
+        const token = await res.json();
+        tokens.push(token);
+      }
+      this.certificates = tokens;
+      console.log(this.certificates);
+    },
     async uploadProfile(user, isActive) {
       const hash = await this.uploadJSONToPinata(user);
       console.log(`${hash.IpfsHash}`);
@@ -206,7 +223,6 @@ export default {
       const userURI = await contract.methods
         .userInfors(this.currentAccount)
         .call();
-      console.log(userURI);
       const res = await fetch(userURI);
       this.User = await res.json();
       this.newUserInfo = this.User;
@@ -218,6 +234,17 @@ export default {
       this.$router.push("/");
     } else {
       this.getUserInfo();
+      this.getCert(this.currentAccount);
+      window.ethereum.on("accountsChanged", async () => {
+        const userURI = await contract.methods
+          .userInfors(this.currentAccount)
+          .call();
+        console.log(userURI);
+        const res = await fetch(userURI);
+        this.User = await res.json();
+        this.newUserInfo = this.User;
+        this.getCert(this.currentAccount);
+      });
     }
   },
   mounted() {},
